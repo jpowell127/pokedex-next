@@ -3,5 +3,6 @@
 @tailwind utilities;
 
 body {
-  @apply bg-gray-300 p-12;
+  background-image: url('../public/pokeball.jpeg');
+  background-repeat: repeat;
 }
