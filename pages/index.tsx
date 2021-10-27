@@ -1,8 +1,7 @@
-import type { GetStaticProps, NextPage } from 'next';
-import Link from 'next/link';
-import Image from 'next/image';
+import type { GetStaticProps } from 'next';
 
 import Layout from '../components/Layout';
+import ListCard from '../components/ListCard';
 interface PokemonData {
   results: Array<{ name: string; url: string }>;
 }
@@ -17,24 +16,9 @@ export default function Home({ pokemons }: HomeProps) {
   return (
     <Layout title='Pokedex Next'>
       <h1 className='text-4xl mb-8 text-center'>Pokedex Next</h1>
-      <ul>
-        {pokemons.map((pokeman, index) => (
-          <li key={index}>
-            <Link href={`/pokemon?id=${index + 1}`}>
-              <a className='border p-4 border-gray my-2 capitalize flex items-center text-lg bg-gray-200 rounded-md'>
-                <div className='w-20 h-20 mr-3'>
-                  <Image
-                    src={pokeman.image}
-                    alt={pokeman.name}
-                    width={80}
-                    height={80}
-                  />
-                </div>
-                <span className='mr-2 font-bold'>{index + 1}.</span>
-                {pokeman.name}
-              </a>
-            </Link>
-          </li>
+      <ul className='grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4'>
+        {pokemons.map((pokemon, index) => (
+          <ListCard key={pokemon.name} pokemon={pokemon} index={index} />
         ))}
       </ul>
     </Layout>
