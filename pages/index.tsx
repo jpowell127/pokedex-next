@@ -1,26 +1,38 @@
 import type { GetStaticProps } from 'next';
+import { useState } from 'react';
 
 import Layout from '../components/Layout';
-import ListCard from '../components/ListCard';
+import PokemonList from '../components/PokemonList';
+import SearchInput from '../components/SearchInput';
+
+import { PokemonBasic, PokemonDateResponse } from '../types';
+
 interface PokemonData {
-  results: Array<{ name: string; url: string }>;
+  results: Array<PokemonDateResponse>;
 }
 
 interface HomeProps {
-  pokemons: Array<{ name: string; url: string; image: string }>;
+  pokemons: Array<PokemonBasic>;
 }
 
 const { API_URL, API_LIMIT, IMAGE_HOST } = process.env;
 
 export default function Home({ pokemons }: HomeProps) {
+  const [searchValue, setSearchValue] = useState('');
+  const [pokemonList, setPokemonList] = useState<Array<PokemonBasic>>(pokemons);
+
+  const updateInput = async (input: string) => {
+    const filtered: Array<PokemonBasic> = pokemons.filter(pokemon =>
+      pokemon.name.toLowerCase().includes(input.toLowerCase()),
+    );
+    setSearchValue(input);
+    setPokemonList(filtered);
+  };
+
   return (
     <Layout title='Pokedex Next'>
-      <h1 className='text-4xl mb-8 text-center'>Pokedex Next</h1>
-      <ul className='grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4'>
-        {pokemons.map((pokemon, index) => (
-          <ListCard key={pokemon.name} pokemon={pokemon} index={index} />
-        ))}
-      </ul>
+      <SearchInput value={searchValue} onChange={updateInput} />
+      <PokemonList pokemonList={pokemonList} />
     </Layout>
   );
 }
@@ -29,10 +41,12 @@ export const getStaticProps: GetStaticProps = async context => {
   try {
     const res = await fetch(`${API_URL}?limit=${API_LIMIT}`);
     const { results }: PokemonData = await res.json();
-    const pokemons = results.map((result, index) => {
-      const paddedIndex = ('00' + (index + 1)).slice(-3);
+
+    const pokemons = results.map((result, i) => {
+      const index = i + 1;
+      const paddedIndex = ('00' + index).slice(-3);
       const image = `${IMAGE_HOST}${paddedIndex}.png`;
-      return { ...result, image };
+      return { ...result, image, index };
     });
 
     return {

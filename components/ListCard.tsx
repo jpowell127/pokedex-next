@@ -1,32 +1,26 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
-interface Pokemon {
-  name: string;
-  url: string;
-  image: string;
-}
+import { PokemonBasic } from '../types';
 
-const ListCard = ({ pokemon, index }: { pokemon: Pokemon; index: number }) => (
-  <li
-    className='border-4 rounded p-4 border-blue-300 my-2 capitalize flex items-center text-lg text-center bg-white rounded-md'
-    key={index}
-  >
-    <Link href={`/pokemon?id=${index + 1}`}>
-      <a>
-        <div className='w-100 h-100'>
-          <Image
-            src={pokemon.image}
-            alt={pokemon.name}
-            width={215}
-            height={215}
-          />
-        </div>
-        <span className='font-bold'>{index + 1}. </span>
-        <span>{pokemon.name} </span>
-      </a>
-    </Link>
-  </li>
-);
+const ListCard = ({ pokemon }: { pokemon: PokemonBasic }) => {
+  const { index, image, name } = pokemon;
+  return (
+    <li
+      className='border-4 rounded p-4 border-blue-100 my-2 capitalize flex items-center rounded-md bg-gradient-to-b from-gray-700 via-gray-900 to-black'
+      key={index}
+    >
+      <div className='text-lg text-center text-white'>
+        <Link href={`/pokemon?id=${index}`}>
+          <a>
+            <Image src={image} alt={name} width={215} height={215} />
+            <span className='font-bold'>{index}. </span>
+            <span>{name} </span>
+          </a>
+        </Link>
+      </div>
+    </li>
+  );
+};
 
 export default ListCard;
